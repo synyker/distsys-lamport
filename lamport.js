@@ -8,7 +8,7 @@ var nodes = [];
 var path = process.cwd() + '/' + config;
 
 
-var nodes = fs.readFileSync(path).toString().split(nl);
+var nodes = fs.readFileSync(path).toString().split('\n');
 
 var dgram = require('dgram');
 server = dgram.createSocket('udp4');
@@ -19,14 +19,13 @@ var host = '127.0.0.1';
 
 // Remove the node itself from the config file
 nodes.splice(id-1, 1);
-
 notReadyNodes = nodes.slice(0);
 
 server.on('listening', function() {
 	var address = server.address();
 	console.log('listening on ' + address.address + ":" + address.port);
 
-	interval = setInterval(pingOtherNodes, 200);
+	interval = setInterval(pingOtherNodes, 1000);
 });
 
 
@@ -66,22 +65,19 @@ server.on('message', function(message, remote) {
 // Listen to the port on localhost
 server.bind(port, host);
 
-var counter = 0;
-
 function pingOtherNodes() {
 
-	console.log(notReadyNodes.length);
+	console.log(notReadyNodes);
 		
 	for (var i = 0; i < notReadyNodes.length; i++) {
-		var remoteHost = nodes[i].split(' ')[1];
-		var remotePort = nodes[i].split(' ')[2];
-		
-		var msg = new Buffer('PING');
-		server.send(msg, 0, msg.length, remotePort, remoteHost, function(err, bytes) {
-			if (err) throw err;
-			console.log('sent msg');
-		})
+		if (notReadyNodes[i] != "") {
+			var remoteHost = notReadyNodes[i].split(' ')[1];
+			var remotePort = notReadyNodes[i].split(' ')[2];
+			var msg = new Buffer('PING');
+			server.send(msg, 0, msg.length, remotePort, remoteHost, function(err, bytes) {
+				if (err) throw err;
+				console.log('sent PING to ' + remoteHost + ':' + remotePort);
+			});
+		}
 	}
-
-	console.log('all other nodes ready');
 }
