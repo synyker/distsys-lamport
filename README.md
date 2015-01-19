@@ -7,6 +7,14 @@ Jonne Airaksinen, 013932592
 ## Program overview
 The main program is writter with Node.js and is supplemented by a couple of Bash scripts for startup of the nodes and for killing unresponsive processes It uses a simple UDP server and client for communication between nodes.
 
+In addition to this readme.pdf-file, the project contains the following files:
+
+* lamport.js – The main Node.js file that is run on every Ukko-node specified in the config.
+* startup.sh – A bash script used to startup the Node.js processes over ssh on Ukko-nodes specified in the file.
+* config.txt – Configuration file containing the information of all nodes, and the hosts and ports they run on.
+* README.md – Command line / GitHub friendly readme, containing the same information as this .pdf
+* kill_processes.sh & ukkonodes – The bash script is used for killing unresponsive processes over ssh on all Ukko-nodes specified in the file ukkonodes. Helpful mostly for development.
+
 ## Running the program
 To start the Node.js processes on all specified Ukko nodes, just run the startup.sh-script. Note that if the contents of the config file changes, those changes must also be made in the startup.sh file. The Node.js processes are started over ssh and run concurrently on the Ukko nodes.
 
