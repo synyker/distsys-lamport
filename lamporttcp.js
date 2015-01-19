@@ -14,21 +14,16 @@ var net = require('net');
 
 // Get the node's own port, host set to localhost regardless of anything
 var port = nodes[id-1].split(' ')[2];
-var host = '127.0.0.1';
+var host = 'ukko177.hpc.cs.helsinki.fi';//'127.0.0.1';
 
 // Remove the node itself from the config file
 nodes.splice(id-1, 1);
 notReadyNodes = nodes.slice(0);
 
-server.on('listening', function() {
-	var address = server.address();
-	console.log('listening on ' + address.address + ":" + address.port);
-
-	interval = setInterval(pingOtherNodes, 1000);
-});
-
 
 var server = net.createServer();
+console.log(port);
+console.log(host);
 net.createServer(function(sock) {
 
 	console.log('CONNECTION: ' + sock.remoteAddress + ':' + sock.remotePort);
@@ -39,39 +34,7 @@ net.createServer(function(sock) {
 
 }).listen(port, host);
 
-interval = setInterval(pingOtherNodes, 1000);
-
-server.on('message', function(message, remote) {
-	console.log(remote.address + ':' + remote.port + ' - ' + message);
-
-	var messageContent = message.toString('utf8').trim();
-	if (messageContent == 'PING') {
-
-		var reply = new Buffer('PONG');
-		server.send(reply, 0, reply.length, remote.port, remote.address, function(err, bytes) {
-			if (err) throw err;
-			console.log('Message sent to ' + remote.address + ':' + remote.port);
-			
-		});
-	}
-
-	if (messageContent == 'PONG') {
-		for (var i = 0; i < notReadyNodes.length; i++) {
-			var remoteHost = notReadyNodes[i].split(' ')[1];
-			var remotePort = notReadyNodes[i].split(' ')[2];
-			if (remoteHost == remote.address && remotePort == remote.port) {
-				console.log('removing ' + remote.address+':'+remote.port);
-				notReadyNodes.splice(i, 1)
-			}
-		}
-
-		if (notReadyNodes.length == 0) {
-			clearInterval(interval);
-			console.log('JAHUUU');
-		}
-	}
-
-});
+//interval = setInterval(pingOtherNodes, 1000);
 
 function pingOtherNodes() {
 		
