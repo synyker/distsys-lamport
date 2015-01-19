@@ -48,7 +48,7 @@ server.on('message', function(message, remote) {
 		for (var i = 0; i < notReadyNodes.length; i++) {
 			var remoteHost = notReadyNodes[i].split(' ')[1];
 			var remotePort = notReadyNodes[i].split(' ')[2];
-			if (remoteHost == remote.address && remotePort == remotePort) {
+			if (remoteHost == remote.address && remotePort == remote.port) {
 				console.log('removing ' + remote.address+':'+remote.port);
 				notReadyNodes.splice(i, 1)
 			}
@@ -66,8 +66,6 @@ server.on('message', function(message, remote) {
 server.bind(port, host);
 
 function pingOtherNodes() {
-
-	console.log(notReadyNodes);
 		
 	for (var i = 0; i < notReadyNodes.length; i++) {
 		if (notReadyNodes[i] != "") {
