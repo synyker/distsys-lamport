@@ -20,6 +20,7 @@ var host = nodes[id-1].split(' ')[1];
 nodes.splice(id-1, 1);
 notReadyNodes = nodes.slice(0);
 
+var history = '';
 var events = 0
 var clock = 0;
 
@@ -56,8 +57,8 @@ server.on('message', function(message, remote) {
 				notReadyNodes.splice(i, 1)
 			}
 		}
-
-		if (notReadyNodes.length == 1 && notReadyNodes[0] == '') {
+		if (notReadyNodes.length == 0) {
+		//if (notReadyNodes.length == 1 && notReadyNodes[0] == '') {
 			clearInterval(setup);
 			console.log('READY TO RUN');
 			running = setInterval(runProcess, 100);
@@ -69,9 +70,11 @@ server.on('message', function(message, remote) {
 		var senderId = messageContent.split(' ')[1].trim();
 		var senderClock = messageContent.split(' ')[2].trim();
 
-		clock = senderClock > clock ? senderClock+1 : clock + 1;
+		clock = senderClock > clock ? parseInt(senderClock)+1 : parseInt(clock) + 1;
 
-		console.log('r ' + senderId + ' ' + senderClock + ' ' + clock)
+		var out = 'r ' + senderId + ' ' + senderClock + ' ' + clock;
+		history += out;
+		console.log(out);
 	}
 
 });
@@ -88,7 +91,10 @@ function runProcess() {
 		var increase = randomInteger(1,5);
 		clock += increase;
 		events += 1;
-		console.log('l ' + increase)
+
+		var out = 'l ' + increase;
+		history += out;
+		console.log(out);
 	}
 	// Send message to other node
 	else if (localOrSend === 2) {
@@ -97,21 +103,28 @@ function runProcess() {
 		var receivingHost = receivingNode[1];
 		var receivingPort = receivingNode[2];
 
-		var msg = new Buffer('s ' + id + ' ' + clock);
-		server.send(msg, msg.length, receivingPort, receivingHost, function (err, bytes) {
+		var syncMsg = new Buffer('s ' + id + ' ' + clock);
+		server.send(syncMsg, 0, syncMsg.length, receivingPort, receivingHost, function (err, bytes) {
 			if (err) throw err;
 		});
-		console.log('s ' + receivingId + ' ' + clock);
+
+		var out = 's ' + receivingId + ' ' + clock
+		history += out;
+		console.log(out);
 	}
 
 	if (events === 100) {
 		clearInterval(running);
+		console.log(id + ' EXITING');
+		//console.log(history);
 		process.exit();
 	}
 }
 
 function pingOtherNodes() {
 	
+	console.log(notReadyNodes.length);
+
 	for (var i = 0; i < notReadyNodes.length; i++) {
 		if (notReadyNodes[i] != "") {
 			var pingHost = notReadyNodes[i].split(' ')[1];
