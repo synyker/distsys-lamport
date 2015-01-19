@@ -1,3 +1,8 @@
+/**
+ ** Distributed Systems Project, Spring 2015
+ ** Jonne Airaksinen, 013932592
+ **/
+
 var fs = require('fs');
 var nl = require('os').EOL;
 
