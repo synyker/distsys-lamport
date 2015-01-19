@@ -12,7 +12,7 @@ In addition to this readme.pdf-file, the project contains the following files:
 * lamport.js – The main Node.js file that is run on every Ukko-node specified in the config.
 * startup.sh – A bash script used to startup the Node.js processes over ssh on Ukko-nodes specified in the file.
 * config.txt – Configuration file containing the information of all nodes, and the hosts and ports they run on.
-* README.md – Command line / GitHub friendly readme, containing the same information as this .pdf
+* readme.pdf – A .pdf version of this readme, containing all the same information.
 * kill_processes.sh & ukkonodes – The bash script is used for killing unresponsive processes over ssh on all Ukko-nodes specified in the file ukkonodes. Helpful mostly for development.
 
 ## Running the program
