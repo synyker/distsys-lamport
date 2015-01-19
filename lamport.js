@@ -27,7 +27,7 @@ var clock = 0;
 server.on('listening', function() {
 	var address = server.address();
 
-	setup = setInterval(pingOtherNodes, 100);
+	setup = setInterval(pingOtherNodes, 50);
 });
 
 
@@ -57,7 +57,7 @@ server.on('message', function(message, remote) {
 		//if (notReadyNodes.length == 1 && notReadyNodes[0] == '') {
 			clearInterval(setup);
 			console.log(id + ' READY TO RUN');
-			running = setInterval(runProcess, 100);
+			running = setInterval(runProcess, 50);
 		}
 	}
 
@@ -67,10 +67,9 @@ server.on('message', function(message, remote) {
 		var senderClock = messageContent.split(' ')[2].trim();
 
 		clock = parseInt(senderClock) > parseInt(clock) ? parseInt(senderClock)+1 : parseInt(clock) + 1;
-
 		var out = 'r ' + senderId + ' ' + senderClock + ' ' + clock;
 		history += out;
-		//console.log(out);
+		console.log(out);
 	}
 
 });
@@ -90,7 +89,7 @@ function runProcess() {
 
 		var out = 'l ' + increase;
 		history += out;
-		//console.log(out);
+		console.log(out);
 	}
 	// Send message to other node
 	else if (localOrSend === 2) {
@@ -106,20 +105,18 @@ function runProcess() {
 
 		var out = 's ' + receivingId + ' ' + clock
 		history += out;
-		//console.log(out);
+		console.log(out);
 	}
 
 	if (events === 100) {
 		clearInterval(running);
-		console.log(id + ' EXITING WITH CLOCK ' + clock);
+		//console.log(id + ' EXITING WITH CLOCK ' + clock);
 		//console.log(history);
 		process.exit();
 	}
 }
 
 function pingOtherNodes() {
-	
-	console.log(notReadyNodes);
 
 	for (var i = 0; i < notReadyNodes.length; i++) {
 		if (notReadyNodes[i] != "") {
