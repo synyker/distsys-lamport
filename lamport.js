@@ -66,7 +66,7 @@ server.on('message', function(message, remote) {
 		var senderId = messageContent.split(' ')[1].trim();
 		var senderClock = messageContent.split(' ')[2].trim();
 
-		clock = senderClock > clock ? parseInt(senderClock)+1 : parseInt(clock) + 1;
+		clock = parseInt(senderClock) > parseInt(clock) ? parseInt(senderClock)+1 : parseInt(clock) + 1;
 
 		var out = 'r ' + senderId + ' ' + senderClock + ' ' + clock;
 		history += out;
