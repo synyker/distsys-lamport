@@ -1,5 +1,5 @@
-## Distributed Systems Project, Spring 2015
-## Lamport Clocks 
+# Distributed Systems Project, Spring 2015
+# Lamport Clocks 
 
 Jonne Airaksinen, 013932592
 19.01.2015
@@ -23,14 +23,14 @@ As the exercise sheet specified, communication with a departed node should be ha
 
 This of course means that some messages are just lost, but I took the freedom to leave this flaw into the program code. If done properly, a master node that keeps track of the active nodes could exists for this purpose, but I deemed this out of the scope for this exercise.
 
-# Program output
+## Program output
 While running, each Node.js process prints its output to the command line, with each local event, sent message and received message on its own line. From the exercise sheet, I understood this was the wanted functionality and this has been implemented in the code. 
 
 However, if instead of this the wanted functionality was to print out the whole history of each process at the end of its run, this is also possible. In the lamport.js file there's a commented out console.log(history) on line 143. Uncommenting this causes a string containing every local event, sent message and received message to be printed at the end of each the run of each process. 
 
 If wanted single files per node were actually the wanted output, I suggest commenting out every line with a console.log call on it, except for line 143. Then the single string output is easily available for further analysis.
 
-# Known problems
+## Known problems
 During the development of this exercise, there were some issues with the reading of the config file. For some reason, a mysterious force sometimes added a newline character to the end of the config file, causing the Node.js code to read in an unwanted empty line, which naturally lead to problems. 
 
 Making sure the config file has just the required configuration files and nothing else should be enough to counter this problem, but in case of mysterious newline characters, commenting out the line 68 in lamport.js and uncommenting the line 73 in the same file may help solve the problem.
