@@ -26,7 +26,6 @@ var clock = 0;
 
 server.on('listening', function() {
 	var address = server.address();
-	console.log('listening on ' + address.address + ":" + address.port);
 
 	setup = setInterval(pingOtherNodes, 100);
 });
@@ -41,8 +40,6 @@ server.on('message', function(message, remote) {
 		var reply = new Buffer('PONG ' + host);
 		server.send(reply, 0, reply.length, remote.port, remote.address, function (err, bytes) {
 			if (err) throw err;
-			console.log('Message sent to ' + remote.address + ':' + remote.port);
-			
 		});
 	}
 
@@ -53,14 +50,13 @@ server.on('message', function(message, remote) {
 			var remotePort = notReadyNodes[i].split(' ')[2];
 			
 			if (remoteHost ==  messageContent.split(' ')[1] && remotePort == remote.port) {
-				console.log('removing ' + remote.address+':'+remote.port);
 				notReadyNodes.splice(i, 1)
 			}
 		}
 		if (notReadyNodes.length == 0) {
 		//if (notReadyNodes.length == 1 && notReadyNodes[0] == '') {
 			clearInterval(setup);
-			console.log('READY TO RUN');
+			console.log(id + ' READY TO RUN');
 			running = setInterval(runProcess, 100);
 		}
 	}
@@ -74,7 +70,7 @@ server.on('message', function(message, remote) {
 
 		var out = 'r ' + senderId + ' ' + senderClock + ' ' + clock;
 		history += out;
-		console.log(out);
+		//console.log(out);
 	}
 
 });
@@ -94,7 +90,7 @@ function runProcess() {
 
 		var out = 'l ' + increase;
 		history += out;
-		console.log(out);
+		//console.log(out);
 	}
 	// Send message to other node
 	else if (localOrSend === 2) {
@@ -110,12 +106,12 @@ function runProcess() {
 
 		var out = 's ' + receivingId + ' ' + clock
 		history += out;
-		console.log(out);
+		//console.log(out);
 	}
 
 	if (events === 100) {
 		clearInterval(running);
-		console.log(id + ' EXITING');
+		console.log(id + ' EXITING WITH CLOCK ' + clock);
 		//console.log(history);
 		process.exit();
 	}
@@ -123,7 +119,7 @@ function runProcess() {
 
 function pingOtherNodes() {
 	
-	console.log(notReadyNodes.length);
+	console.log(notReadyNodes);
 
 	for (var i = 0; i < notReadyNodes.length; i++) {
 		if (notReadyNodes[i] != "") {
